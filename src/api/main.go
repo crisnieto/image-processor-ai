@@ -9,6 +9,7 @@ func main() {
 	v1 := router.Group("/api/v1")
 	{
 		v1.GET("/ping", controller.GetPing)
+		v1.GET("/download/:name", controller.DownloadAudio)
 		v1.POST("/upload", controller.ReceiveImage)
 	}
 	router.Run()

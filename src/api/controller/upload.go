@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"github.com/crisnieto/image-processor-ai/src/api/model"
 	"github.com/crisnieto/image-processor-ai/src/api/service"
 	"github.com/gin-gonic/gin"
 	"io"
@@ -33,6 +34,7 @@ func ReceiveImage(c *gin.Context){
 		return
 	}
 
+
 	textConcat :=  ""
 
 	for _, element := range service.Rekognize(&filename).TextDetections {
@@ -46,5 +48,19 @@ func ReceiveImage(c *gin.Context){
 	fmt.Println("VOY A DEVOLVER")
 	fmt.Println(textConcat)
 
-	c.JSON(200, textConcat)
+	audioFile, err3 := service.Synthesize(&textConcat, &filename)
+	if err3 != nil{
+		fmt.Println("There was an error while creating de MP3 File")
+	}
+
+	audioPath := "./tmp/"+*audioFile
+
+
+	service.Upload(audioFile, &audioPath)
+
+	os.Remove(path)
+	os.Remove(audioPath)
+
+
+	c.JSON(200, model.File{File: filename, Text: textConcat})
 }

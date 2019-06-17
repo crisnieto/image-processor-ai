@@ -30,10 +30,13 @@ func input(filename *string) *rekognition.DetectTextInput{
 
 	detectTextInput := rekognition.DetectTextInput{}
 	image := rekognition.Image{}
+
+	s3Path := *testimage + "/" + *testimage
+
 	s3Object := rekognition.S3Object{}
 
 	s3Object.Bucket= &bucket
-	s3Object.Name= testimage
+	s3Object.Name= &s3Path
 
 	image.S3Object = &s3Object
 
