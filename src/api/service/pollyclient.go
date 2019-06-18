@@ -22,7 +22,12 @@ func createPollySession() *session.Session{
 func Synthesize(text *string, filename *string) (*string ,error){
 	svc := polly.New(createPollySession())
 
-	input := &polly.SynthesizeSpeechInput{OutputFormat: aws.String("mp3"), Text: aws.String(*text), VoiceId: aws.String("Mia"), LanguageCode: aws.String("es-MX")}
+	textWithBreak :="<speak>" + *text + " <break time='3000ms'/></speak>"
+
+	textType := "ssml"
+
+	input := &polly.SynthesizeSpeechInput{OutputFormat: aws.String("mp3"), Text: aws.String(textWithBreak), VoiceId: aws.String("Mia"), LanguageCode: aws.String("es-MX")}
+	input.TextType = &textType
 	output, err := svc.SynthesizeSpeech(input)
 	if err != nil {
 		fmt.Println("Got error calling SynthesizeSpeech:")
